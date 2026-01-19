@@ -1,0 +1,22 @@
+:root {
+    --bg-color: #0f0f0f;
+    --text-color: white;
+    --header-bg: rgba(10, 10, 10, 0.75);
+    --border-color: #333;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: background 0.3s, color 0.3s;
+}
+
+body.light-mode {
+    --bg-color: #f4f4f4;
+    --text-color: #1a1a1a;
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --border-color: #ccc;
+}

@@ -1,0 +1,1 @@
+start chrome.exe "%~dp0index.html" --allow-file-access-from-files --user-data-dir="%temp%\LecteurCBZ_Dev" --no-first-run
