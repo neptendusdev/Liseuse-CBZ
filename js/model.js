@@ -13,8 +13,18 @@ export class Model {
         imageFiles.sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
         
         return Promise.all(imageFiles.map(async (name) => {
-            const data = await contents.files[name].async("blob");
-            return URL.createObjectURL(data);
+            // 1. On extrait les données brutes
+            const uint8array = await contents.files[name].async("uint8array");
+            
+            // 2. On détermine le type MIME manuellement si c'est un AVIF
+            let type = "";
+            if (name.toLowerCase().endsWith('.avif')) {
+                type = "image/avif";
+            }
+
+            // 3. On crée le Blob avec le type explicite
+            const blob = new Blob([uint8array], { type: type });
+            return URL.createObjectURL(blob);
         }));
     }
 }
