@@ -5,7 +5,7 @@ export class Model {
         
         const imageFiles = Object.keys(contents.files).filter(name => {
             const isFile = !contents.files[name].dir;
-            const isImage = /\.(webp|jpg|jpeg|png|gif)$/i.test(name);
+            const isImage = /\.(webp|jpg|jpeg|png|gif|avif)$/i.test(name);
             const isNotHidden = !name.split('/').some(part => part.startsWith('.'));
             return isFile && isImage;
         });
