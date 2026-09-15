@@ -22,8 +22,41 @@ header {
 }
 
 .header-left { justify-content: flex-start; gap: 15px; }
-.header-center { justify-content: center; }
+.header-center { justify-content: center; gap: 10px; }
 .header-right { justify-content: flex-end; gap: 15px; }
+
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-left: 20px;
+}
+
+.tab-link {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    opacity: 0.7;
+    transition: opacity 0.3s, background 0.3s;
+}
+
+.tab-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+body.light-mode .tab-link:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.tab-link.active {
+    opacity: 1;
+    font-weight: bold;
+    border-bottom: 2px solid #007bff;
+}
 
 .icon {
     height: 40px;

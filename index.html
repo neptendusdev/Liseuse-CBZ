@@ -17,20 +17,26 @@
             <div class="icon">
                 <img alt="icon" style="display:none"> 
             </div>
+            <nav class="nav-tabs">
+                <button class="tab-link active" data-target="accueil-tab">Accueil</button>
+                <button class="tab-link" data-target="lecteur-tab">Lecteur</button>
+                <button class="tab-link" data-target="biblio-tab" id="nav-biblio" style="display:none;">Bibliothèque</button>
+            </nav>
         </div>
         
         <div class="header-center">    
-            <div id="drop-zone">
+            <div id="drop-zone" style="display: none;">
                 Choisissez un <strong>.cbz</strong>
                 <input type="file" id="fileInput" accept=".cbz,.zip" style="display:none">
             </div>
+            <button id="add-to-biblio-btn" style="display: none;">Ajouter à la bibliothèque</button>
         </div>
 
         <div class="header-right">
             <button id="theme-switch" class="btn-icon"><strong>switch theme</strong></button>
-            <div class="icon-zoom-moins"></div>
-            <input type="range" id="zoom-slider" min="30" max="100" value="98">
-            <div class="icon-zoom-plus"></div>
+            <div class="icon-zoom-moins" style="display: none;"></div>
+            <input type="range" id="zoom-slider" min="30" max="100" value="98" style="display: none;">
+            <div class="icon-zoom-plus" style="display: none;"></div>
         </div>
 
         <div id="loader" class="loader">
@@ -39,7 +45,37 @@
 
     </header>
 
-    <div id="viewer"></div>
+    <main class="main-content">
+        <div id="accueil-tab" class="tab-content active">
+            <div id="login-section" class="card">
+                <h2>Connexion</h2>
+                <form id="login-form">
+                    <input type="text" id="login-id" placeholder="Identifiant" required>
+                    <input type="password" id="login-pwd" placeholder="Mot de passe" required>
+                    <button type="submit">Se connecter</button>
+                </form>
+            </div>
+            <div id="user-section" class="card" style="display:none;">
+                <h2 id="welcome-message"></h2>
+                <button id="logout-btn">Se déconnecter</button>
+                <button id="go-biblio-btn">Ma Bibliothèque</button>
+
+                <h3>Lectures en cours</h3>
+                <ul id="current-reads-list"></ul>
+            </div>
+        </div>
+
+        <div id="lecteur-tab" class="tab-content">
+            <div id="viewer"></div>
+        </div>
+
+        <div id="biblio-tab" class="tab-content">
+            <div class="card">
+                <h2>Ma Bibliothèque</h2>
+                <ul id="library-list"></ul>
+            </div>
+        </div>
+    </main>
 
     <script type="module" src="js/app.js"></script>
 </body>
