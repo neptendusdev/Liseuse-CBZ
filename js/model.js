@@ -1,75 +1,36 @@
 export class Model {
-    constructor() {
-        this.currentUser = null;
-        this.loadSession();
-    }
-
-    loadSession() {
-        const session = localStorage.getItem('currentUser');
-        if (session) {
-            this.currentUser = session;
-        }
-    }
-
-    login(id, password) {
-        // Simple mock authentication for now, accepting any id and password
-        if (id && password) {
-            this.currentUser = id;
-            localStorage.setItem('currentUser', id);
-            return true;
-        }
-        return false;
-    }
-
-    logout() {
-        this.currentUser = null;
-        localStorage.removeItem('currentUser');
-    }
-
-    isLoggedIn() {
-        return this.currentUser !== null;
-    }
-
-    getCurrentUser() {
-        return this.currentUser;
-    }
-
-    getUserData() {
-        if (!this.currentUser) return { library: [], currentReads: [] };
-        const data = localStorage.getItem(`userData_${this.currentUser}`);
-        return data ? JSON.parse(data) : { library: [], currentReads: [] };
-    }
-
-    saveUserData(data) {
-        if (this.currentUser) {
-            localStorage.setItem(`userData_${this.currentUser}`, JSON.stringify(data));
-        }
-    }
-
-    addToLibrary(fileName) {
-        if (!this.currentUser) return;
-        const data = this.getUserData();
-        if (!data.library.includes(fileName)) {
-            data.library.push(fileName);
-            this.saveUserData(data);
-        }
-    }
-
-    addCurrentRead(fileName) {
-        if (!this.currentUser) return;
-        const data = this.getUserData();
-        // Remove if it exists to put it at the top
-        data.currentReads = data.currentReads.filter(f => f !== fileName);
-        data.currentReads.unshift(fileName); // add to start
-        this.saveUserData(data);
+    saveLibrary(jsonArray) {
+        localStorage.setItem('cbz_library', JSON.stringify(jsonArray));
     }
 
     getLibrary() {
-        return this.getUserData().library;
+        const data = localStorage.getItem('cbz_library');
+        return data ? JSON.parse(data) : null;
     }
 
-    getCurrentReads() {
-        return this.getUserData().currentReads;
+    getLastReads() {
+        const data = localStorage.getItem('cbz_last_reads');
+        return data ? JSON.parse(data) : [];
+    }
+
+    saveLastRead(readData) {
+        let reads = this.getLastReads();
+        // Remove if exists to place at front
+        reads = reads.filter(r => r.title !== readData.title);
+        // Add to front
+        reads.unshift({
+            ...readData,
+            timestamp: Date.now()
+        });
+        // Keep only top 10
+        if (reads.length > 10) reads = reads.slice(0, 10);
+        localStorage.setItem('cbz_last_reads', JSON.stringify(reads));
+    }
+
+    removeLastRead(title) {
+        let reads = this.getLastReads();
+        reads = reads.filter(r => r.title !== title);
+        localStorage.setItem('cbz_last_reads', JSON.stringify(reads));
     }
 
     async extractImages(file) {

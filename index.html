@@ -13,30 +13,26 @@
 <body>
 
     <header>
-        <div class="header-left">
+        <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
             <div class="icon">
                 <img alt="icon" style="display:none"> 
             </div>
-            <nav class="nav-tabs">
-                <button class="tab-link active" data-target="accueil-tab">Accueil</button>
-                <button class="tab-link" data-target="lecteur-tab">Lecteur</button>
-                <button class="tab-link" data-target="biblio-tab" id="nav-biblio" style="display:none;">Bibliothèque</button>
-            </nav>
+            <button id="btn-biblio" class="btn-header">Bibliothèque (JSON)</button>
+            <input type="file" id="jsonInput" accept=".json" style="display:none">
         </div>
         
         <div class="header-center">    
-            <div id="drop-zone" style="display: none;">
+            <div id="drop-zone">
                 Choisissez un <strong>.cbz</strong>
                 <input type="file" id="fileInput" accept=".cbz,.zip" style="display:none">
             </div>
-            <button id="add-to-biblio-btn" style="display: none;">Ajouter à la bibliothèque</button>
         </div>
 
         <div class="header-right">
             <button id="theme-switch" class="btn-icon"><strong>switch theme</strong></button>
-            <div class="icon-zoom-moins" style="display: none;"></div>
-            <input type="range" id="zoom-slider" min="30" max="100" value="98" style="display: none;">
-            <div class="icon-zoom-plus" style="display: none;"></div>
+            <div class="icon-zoom-moins"></div>
+            <input type="range" id="zoom-slider" min="30" max="100" value="98">
+            <div class="icon-zoom-plus"></div>
         </div>
 
         <div id="loader" class="loader">
@@ -45,37 +41,34 @@
 
     </header>
 
-    <main class="main-content">
-        <div id="accueil-tab" class="tab-content active">
-            <div id="login-section" class="card">
-                <h2>Connexion</h2>
-                <form id="login-form">
-                    <input type="text" id="login-id" placeholder="Identifiant" required>
-                    <input type="password" id="login-pwd" placeholder="Mot de passe" required>
-                    <button type="submit">Se connecter</button>
-                </form>
+    <main id="home-content">
+        <!-- Last Read Section -->
+        <div class="recent-reads-container" id="recent-reads-container">
+            <div class="recent-reads-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg class="recent-icon" viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path></svg>
+                    <h2>REPRENEZ VOTRE VISIONNAGE</h2>
+                </div>
+                <div class="recent-reads-nav">
+                    <button class="nav-btn prev-btn">&larr;</button>
+                    <button class="nav-btn next-btn">&rarr;</button>
+                </div>
             </div>
-            <div id="user-section" class="card" style="display:none;">
-                <h2 id="welcome-message"></h2>
-                <button id="logout-btn">Se déconnecter</button>
-                <button id="go-biblio-btn">Ma Bibliothèque</button>
-
-                <h3>Lectures en cours</h3>
-                <ul id="current-reads-list"></ul>
+            <div class="recent-reads-grid" id="recent-reads-grid">
+                <!-- Cards will be injected here -->
             </div>
         </div>
 
-        <div id="lecteur-tab" class="tab-content">
-            <div id="viewer"></div>
-        </div>
-
-        <div id="biblio-tab" class="tab-content">
-            <div class="card">
-                <h2>Ma Bibliothèque</h2>
-                <ul id="library-list"></ul>
+        <!-- Library Container -->
+        <div class="library-container" id="library-container" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+                <h2 style="color: white; margin: 0; font-size: 18px;">VOTRE BIBLIOTHÈQUE</h2>
             </div>
+            <div id="library-grid" class="library-grid"></div>
         </div>
     </main>
+
+    <div id="viewer"></div>
 
     <script type="module" src="js/app.js"></script>
 </body>

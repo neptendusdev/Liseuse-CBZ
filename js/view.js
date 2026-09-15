@@ -7,99 +7,83 @@ export class View {
         this.themeBtn = document.getElementById('theme-switch');
         this.zoomSlider = document.getElementById('zoom-slider');
 
-        // Navigation and Auth elements
-        this.tabLinks = document.querySelectorAll('.tab-link');
-        this.tabContents = document.querySelectorAll('.tab-content');
-        this.navBiblio = document.getElementById('nav-biblio');
-
-        this.loginSection = document.getElementById('login-section');
-        this.userSection = document.getElementById('user-section');
-        this.loginForm = document.getElementById('login-form');
-        this.loginIdInput = document.getElementById('login-id');
-        this.loginPwdInput = document.getElementById('login-pwd');
-
-        this.welcomeMessage = document.getElementById('welcome-message');
-        this.logoutBtn = document.getElementById('logout-btn');
-        this.goBiblioBtn = document.getElementById('go-biblio-btn');
-
-        this.currentReadsList = document.getElementById('current-reads-list');
-        this.libraryList = document.getElementById('library-list');
-        this.addToBiblioBtn = document.getElementById('add-to-biblio-btn');
-
-        // Toolbar elements
-        this.iconZoomMoins = document.querySelector('.icon-zoom-moins');
-        this.iconZoomPlus = document.querySelector('.icon-zoom-plus');
+        // New elements
+        this.btnBiblio = document.getElementById('btn-biblio');
+        this.jsonInput = document.getElementById('jsonInput');
+        this.homeContent = document.getElementById('home-content');
+        this.libraryContainer = document.getElementById('library-container');
+        this.libraryGrid = document.getElementById('library-grid');
+        this.recentReadsGrid = document.getElementById('recent-reads-grid');
     }
 
-    switchTab(tabId) {
-        this.tabLinks.forEach(link => {
-            if (link.dataset.target === tabId) {
-                link.classList.add('active');
-            } else {
-                link.classList.remove('active');
-            }
-        });
+    renderLastReads(reads, onCardClick, onCloseClick) {
+        if (!this.recentReadsGrid) return;
+        this.recentReadsGrid.innerHTML = '';
 
-        this.tabContents.forEach(content => {
-            if (content.id === tabId) {
-                content.classList.add('active');
-            } else {
-                content.classList.remove('active');
-            }
-        });
-
-        // Show/hide toolbar elements based on tab
-        const isLecteur = tabId === 'lecteur-tab';
-        this.dropZone.style.display = isLecteur ? 'block' : 'none';
-        this.iconZoomMoins.style.display = isLecteur ? 'block' : 'none';
-        this.iconZoomPlus.style.display = isLecteur ? 'block' : 'none';
-        this.zoomSlider.style.display = isLecteur ? 'block' : 'none';
-
-        // add to biblio btn is only shown in lecteur if logged in and file loaded
-        if (!isLecteur) {
-            this.addToBiblioBtn.style.display = 'none';
+        if (!reads || reads.length === 0) {
+            this.recentReadsGrid.innerHTML = '<div style="color: #999; padding: 20px;">Aucune lecture récente.</div>';
+            return;
         }
+
+        reads.forEach(read => {
+            const card = document.createElement('div');
+            card.className = 'read-card';
+
+            card.innerHTML = `
+                <div class="read-card-image-container">
+                    <img class="read-card-image" src="${read.cover || 'assets/icon_dark.png'}" alt="Cover">
+                    <div class="read-card-badge">Anime</div>
+                    <img class="read-card-flag" src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png" alt="FR">
+                    <div class="read-card-close" data-title="${read.title}">✕</div>
+                </div>
+                <div class="read-card-content">
+                    <h3 class="read-card-title">${read.title}</h3>
+                    <div class="read-card-progress">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"></path></svg>
+                        ${read.progress || 'Fichier local'}
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', (e) => {
+                if (e.target.classList.contains('read-card-close')) {
+                    e.stopPropagation();
+                    if (onCloseClick) onCloseClick(read.title);
+                } else {
+                    if (onCardClick) onCardClick(read);
+                }
+            });
+
+            this.recentReadsGrid.appendChild(card);
+        });
     }
 
-    updateAuthUI(isLoggedIn, userId) {
-        if (isLoggedIn) {
-            this.loginSection.style.display = 'none';
-            this.userSection.style.display = 'block';
-            this.navBiblio.style.display = 'inline-block';
-            this.welcomeMessage.textContent = `Bienvenue, ${userId} !`;
-        } else {
-            this.loginSection.style.display = 'block';
-            this.userSection.style.display = 'none';
-            this.navBiblio.style.display = 'none';
-            this.loginIdInput.value = '';
-            this.loginPwdInput.value = '';
-            this.switchTab('accueil-tab'); // redirect to accueil on logout
-            this.addToBiblioBtn.style.display = 'none';
-        }
-    }
+    renderLibraryGrid(items, onItemClick) {
+        this.libraryContainer.style.display = 'block';
+        this.libraryGrid.innerHTML = '';
 
-    renderList(container, items, emptyMessage = "Aucun élément") {
-        container.innerHTML = '';
-        if (items.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = emptyMessage;
-            container.appendChild(li);
+        if (!items || items.length === 0) {
+            this.libraryGrid.innerHTML = '<div style="color: #999;">Aucun élément dans la bibliothèque.</div>';
             return;
         }
 
         items.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item;
-            container.appendChild(li);
+            const el = document.createElement('div');
+            el.className = 'library-item';
+            el.innerHTML = `<h3>${item.title}</h3><p style="font-size:12px;color:#aaa">${item.path}</p>`;
+            el.addEventListener('click', () => {
+                if (onItemClick) onItemClick(item);
+            });
+            this.libraryGrid.appendChild(el);
         });
     }
 
-    renderLibrary(items) {
-        this.renderList(this.libraryList, items, "Votre bibliothèque est vide.");
+    hideHome() {
+        if (this.homeContent) this.homeContent.style.display = 'none';
     }
 
-    renderCurrentReads(items) {
-        this.renderList(this.currentReadsList, items, "Aucune lecture en cours.");
+    showHome() {
+        if (this.homeContent) this.homeContent.style.display = 'block';
     }
 
     toggleTheme() {
